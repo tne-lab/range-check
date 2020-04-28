@@ -1,26 +1,27 @@
 //This prevents include loops. We recommend changing the macro to a name suitable for your plugin
-#ifndef PROCESSORPLUGIN_H_DEFINED
-#define PROCESSORPLUGIN_H_DEFINED
+#ifndef RANGECHECK_H_DEFINED
+#define RANGECHECK_H_DEFINED
 
 #include <ProcessorHeaders.h>
 
 //namespace must be an unique name for your plugin
-namespace ProcessorPluginSpace
+namespace RangeCheck
 {
-	class ProcessorPlugin : public GenericProcessor
+	class Node : public GenericProcessor
 	{
+		friend class RangeCheckEditor;
 	public:
 		/** The class constructor, used to initialize any members. */
-		ProcessorPlugin();
+		Node();
 
 		/** The class destructor, used to deallocate memory */
-		~ProcessorPlugin();
+		~Node();
 
 		/** Indicates if the processor has a custom editor. Defaults to false */
-		//bool hasEditor() const { return true; }
+		bool hasEditor() const { return true; }
 
 		/** If the processor has a custom editor, this method must be defined to instantiate it. */
-		//AudioProcessorEditor* createEditor() override;
+		AudioProcessorEditor* createEditor() override;
 
 		/** Optional method that informs the GUI if the processor is ready to function. If false acquisition cannot start. Defaults to true */
 		//bool isReady();
@@ -52,13 +53,13 @@ namespace ProcessorPluginSpace
 		/** The method that standard controls on the editor will call.
 		It is recommended that any variables used by the "process" function
 		are modified only through this method while data acquisition is active. */
-		//void setParameter(int parameterIndex, float newValue) override;
+		void setParameter(int parameterIndex, float newValue) override;
 
 		/** Saving custom settings to XML. */
-		//void saveCustomParametersToXml(XmlElement* parentElement) override;
+		void saveCustomParametersToXml(XmlElement* parentElement) override;
 
 		/** Load custom settings from XML*/
-		//void loadCustomParametersFromXml() override;
+		void loadCustomParametersFromXml() override;
 
 		/** Optional method called every time the signal chain is refreshed or changed in any way.
 
@@ -68,8 +69,35 @@ namespace ProcessorPluginSpace
 		structure shouldn't be manipulated outside of this method.
 
 		*/
-		//void updateSettings() override;
+		void updateSettings() override;
 
+	private:
+		void createEventChannels();
+		void triggerEvent(juce::int64 bufferTs, int offset);
+		void triggerEventOff(juce::int64 bufferTs, int offset);
+		Array<int> activeChannels;
+
+		int inputChannel;
+		int eventChannel;
+		float minVal;
+		float maxVal;
+		bool currState;
+
+		EventChannel* eventChannelPtr;
+		//MetaDataDescriptorArray eventMetaDataDescriptors;
+
+		Array<int> getActiveInputs();
+		int numChannels;
+
+		enum Parameter
+        {
+            EVENT_CHANNEL,
+            INPUT_CHANNEL,
+			MIN_VAL,
+			MAX_VAL
+        };
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Node);
 	};
 }
 
