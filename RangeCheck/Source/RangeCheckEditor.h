@@ -34,7 +34,7 @@ namespace RangeCheck
         : public GenericEditor
         , public ComboBox::Listener
         , public Label::Listener
-        , public Button::Listener
+        //, public Button::Listener
     {
 
     public:
@@ -43,7 +43,7 @@ namespace RangeCheck
         
         void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
         void labelTextChanged(Label* labelThatHasChanged) override; // looks for those
-        void buttonClicked(Button* buttonClick) override;
+        void buttonEvent(Button* buttonClick) override;
         // Override means builtin. We are just changing its function, but it will get called automatically when needed
         void channelChanged(int chan, bool newState) override;
 

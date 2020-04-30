@@ -90,6 +90,8 @@ RangeCheckEditor::RangeCheckEditor(Node* parentNode, bool useDefaultParameterEdi
     maxNeg->setTooltip("Make this number negative");
     //instantButton->setColour(ToggleButton::textColourId, Colours::white);
     addAndMakeVisible(maxNeg);
+
+    setEnabledState(false);
 }
 
 RangeCheckEditor::~RangeCheckEditor() {}
@@ -168,7 +170,7 @@ void RangeCheckEditor::stopAcquisition()
     outputBox->setEnabled(true);
 }
 
-void RangeCheckEditor::buttonClicked(Button* buttonClicked)
+void RangeCheckEditor::buttonEvent(Button* buttonClicked)
 {
     if (buttonClicked == minNeg)
     {
